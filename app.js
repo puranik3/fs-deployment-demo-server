@@ -1,3 +1,4 @@
+require( 'dotenv' ).config();
 require( './data/init' );
 
 const path = require( 'path' );
@@ -7,7 +8,11 @@ const workshopsRouter = require('./routes/workshops');
 
 const app = express();
 
-app.use( cors() );
+if( process.env.NODE_ENV === 'development' ) {
+    app.use( cors() );
+}
+
+app.use( express.static( path.join( process.cwd(), 'public' ) ) );
 
 app.use('/api/workshops', workshopsRouter);
 
@@ -26,9 +31,9 @@ app.use( '/api', function(error, req, res, next) {
     });
 });
 
-// app.use(function (req, res, next) {
-//     res.sendFile( path.join( process.cwd(), 'public', 'index.html' ) );
-// });
+app.use(function (req, res, next) {
+    res.sendFile( path.join( process.cwd(), 'public', 'index.html' ) );
+});
 
 const PORT = process.env.PORT || 3000;
 
